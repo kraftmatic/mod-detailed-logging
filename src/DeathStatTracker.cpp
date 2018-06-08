@@ -38,7 +38,7 @@ private:
 
     insertCount++;
 
-    if (insertCount > 1000){
+    if (true){
       // Dump to log
       ofstream logFile;
       logFile.open ("deaths.log", ofstream::app);

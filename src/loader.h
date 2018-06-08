@@ -1,4 +1,3 @@
-
+void AddZoneAreaTrackerScripts();
 void AddKillStatTrackerScripts();
 void AddDeathStatTrackerScripts();
-void AddZoneAreaTrackerScripts();

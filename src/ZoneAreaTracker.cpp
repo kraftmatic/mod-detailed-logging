@@ -11,10 +11,10 @@ using std::stringstream;
 
 class ZoneAreaTracker : public PlayerScript {
 public:
-  ZoneAreaTracker() : PlayerScript("ZoneAreaTracker") {}
   stringstream fullStream;
+  ZoneAreaTracker() : PlayerScript("ZoneAreaTracker") {  }
 
-  void OnPlayerUpdateZone(Player *player, uint32 newZone, uint32 newArea){
+  void OnUpdateZone(Player *player, uint32 newZone, uint32 newArea) override{
     stringstream zoneStream;
 
     auto t = std::time(nullptr);
@@ -38,6 +38,31 @@ public:
     StringDump();
   }
 
+  void OnUpdateArea(Player *player, uint32 oldArea, uint32 newArea) override{
+    stringstream areaStream;
+
+    auto t = std::time(nullptr);
+    auto tm = *std::localtime(&t);
+
+    Group* group = player->GetGroup();
+
+    areaStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
+    areaStream << player->GetName() << "," << player->getFaction() << "," << player->getLevel() << "," << player->GetMaxHealth() << "," << player->GetHealth() << ",";
+    areaStream << "000000" << "," << newArea << (group != NULL) << ",";
+
+    if (group != NULL){
+      areaStream << group->isRaidGroup();
+    } else {
+      areaStream << "false";
+    }
+
+    areaStream << "\n";
+
+    fullStream << areaStream.str();
+    StringDump();
+ 
+  }
+
 private:
 
   int insertCount = 0;
@@ -46,7 +71,7 @@ private:
 
     insertCount++;
 
-    if (insertCount > 1000){
+    if (true){
       // Dump to log
       ofstream logFile;
       logFile.open ("zonearea.log", ofstream::app);
