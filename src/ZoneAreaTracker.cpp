@@ -17,13 +17,12 @@ public:
 
   ZoneAreaTracker() : PlayerScript("ZoneAreaTracker") { 
 
-    struct stat buffer;   
-    if (stat ("zonearea.log", &buffer) == 0){
-      fullStream << "test";
-      StringDump();
-    }
-
-   }
+     ifstream ifile("zonearea.log");
+     if (!ifile) {
+       fullStream << "timestamp,player,faction,level,maxhealth,currenthealth,newzone,newarea,ingroup,inraid\n";
+       StringDump();
+     }
+}
 
   void OnUpdateZone(Player *player, uint32 newZone, uint32 newArea) override{
 
@@ -87,7 +86,7 @@ private:
 
     insertCount++;
 
-    if (insertCount > logDumpSize){
+    if (true){
       // Dump to log
       ofstream logFile;
       logFile.open ("zonearea.log", ofstream::app);
