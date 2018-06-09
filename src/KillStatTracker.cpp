@@ -1,5 +1,3 @@
-
-
 #include "Configuration/Config.h"
 #include "Player.h"
 #include "ScriptMgr.h"
@@ -12,11 +10,22 @@ using std::stringstream;
 
 class KillStatTracker : public PlayerScript {
 public:
-  KillStatTracker() : PlayerScript("KillStatTracker") {}
-
+  
   stringstream fullStream;
   bool loggingEnabled = sConfigMgr->GetBoolDefault("KillDetailedLogging.enabled", true);
   int logDumpSize = sConfigMgr->GetIntDefault("KillDetailedLogging.dumpSize", 0);
+
+  KillStatTracker() : PlayerScript("KillStatTracker") {
+
+    // If the file doesn't exist we will create it and add the appropriate headers
+
+    ifstream ifile("kills.log");
+    if (!ifile) {
+       fullStream << "timestamp,player,faction.level.maxhealth,currenthealth,creature,creaturefaction,creaturemaxhealth,zoneid,areaid,isgamemaster\n";
+       StringDump();
+    }
+
+  }
 
   void OnCreatureKill(Player *player, Creature *killed) override{
 

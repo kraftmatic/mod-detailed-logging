@@ -17,11 +17,13 @@ public:
 
   ZoneAreaTracker() : PlayerScript("ZoneAreaTracker") { 
 
-     ifstream ifile("zonearea.log");
-     if (!ifile) {
-       fullStream << "timestamp,player,faction,level,maxhealth,currenthealth,newzone,newarea,ingroup,inraid\n";
-       StringDump();
-     }
+    // If the file doesn't exist we will create it and add the appropriate headers
+
+    ifstream ifile("zonearea.log");
+    if (!ifile) {
+      fullStream << "timestamp,player,faction,level,maxhealth,currenthealth,newzone,newarea,ingroup,inraid\n";
+      StringDump();
+    }
 }
 
   void OnUpdateZone(Player *player, uint32 newZone, uint32 newArea) override{

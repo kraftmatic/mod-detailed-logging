@@ -10,10 +10,22 @@ using std::stringstream;
 
 class DeathStatTracker : public PlayerScript {
 public:
-  DeathStatTracker() : PlayerScript("DeathStatTracker") {}
+
   stringstream fullStream;
   bool loggingEnabled = sConfigMgr->GetBoolDefault("KillDetailedLogging.enabled", true);
   int logDumpSize = sConfigMgr->GetIntDefault("KillDetailedLogging.dumpSize", 0);
+
+  DeathStatTracker() : PlayerScript("DeathStatTracker") {
+
+    // If the file doesn't exist we will create it and add the appropriate headers
+
+    ifstream ifile("deaths.log");
+    if (!ifile) {
+       fullStream << "timestamp,player,faction.level.maxhealth,currenthealth,creature,creaturefaction,creaturemaxhealth,zoneid,areaid,isgamemaster\n";
+       StringDump();
+    }
+
+  }
 
   void OnPlayerKilledByCreature(Creature *creature, Player *player) override{
     if (loggingEnabled){
