@@ -21,7 +21,7 @@ public:
 
     ifstream ifile("deaths.log");
     if (!ifile) {
-       fullStream << "timestamp,player,faction.level.maxhealth,currenthealth,creature,creaturefaction,creaturemaxhealth,zoneid,areaid,isgamemaster\n";
+       fullStream << "timestamp,player,faction,level,maxhealth,currenthealth,creature,creaturefaction,creaturemaxhealth,zoneid,areaid,isgamemaster\n";
        StringDump();
     }
 
