@@ -12,21 +12,25 @@ class DeathStatTracker : public PlayerScript {
 public:
   DeathStatTracker() : PlayerScript("DeathStatTracker") {}
   stringstream fullStream;
+  bool loggingEnabled = sConfigMgr->GetBoolDefault("KillDetailedLogging.enabled", true);
+  int logDumpSize = sConfigMgr->GetIntDefault("KillDetailedLogging.dumpSize", 0);
 
   void OnPlayerKilledByCreature(Creature *creature, Player *player) override{
-    stringstream killStream;
+    if (loggingEnabled){
+      stringstream killStream;
 
-    auto t = std::time(nullptr);
-    auto tm = *std::localtime(&t);
+      auto t = std::time(nullptr);
+      auto tm = *std::localtime(&t);
 
-    killStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
-    killStream << player->GetName() << "," << player->getFaction() << "," << player->getLevel() << "," << player->GetMaxHealth() << "," << player->GetHealth() << ",";
-    killStream << creature->GetName() << "," << creature->getFaction() << "," << creature->GetMaxHealth() << ",";
-    killStream << player->GetZoneId() << "," << player->GetAreaId() << "," << player->IsGameMaster();
-    killStream << "\n";
+      killStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
+      killStream << player->GetName() << "," << player->getFaction() << "," << player->getLevel() << "," << player->GetMaxHealth() << "," << player->GetHealth() << ",";
+      killStream << creature->GetName() << "," << creature->getFaction() << "," << creature->GetMaxHealth() << ",";
+      killStream << player->GetZoneId() << "," << player->GetAreaId() << "," << player->IsGameMaster();
+      killStream << "\n";
 
-    fullStream << killStream.str();
-    StringDump();
+      fullStream << killStream.str();
+      StringDump();
+    }
   }
 
  
@@ -38,7 +42,7 @@ private:
 
     insertCount++;
 
-    if (true){
+    if (insertCount > logDumpSize){
       // Dump to log
       ofstream logFile;
       logFile.open ("deaths.log", ofstream::app);
@@ -55,4 +59,29 @@ private:
   }
 };
 
-void AddDeathStatTrackerScripts() { new DeathStatTracker(); }
+class death_logging_conf : public WorldScript
+{
+public:
+    death_logging_conf() : WorldScript("death_logging_conf") { }
+
+    void OnBeforeConfigLoad(bool reload) override
+    {
+        if (!reload) {
+            std::string conf_path = _CONF_DIR;
+            std::string cfg_file = conf_path + "/detail_logging.conf";
+#ifdef WIN32
+            cfg_file = "detail_logging.conf";
+#endif
+            std::string cfg_def_file = cfg_file + ".dist";
+
+            sConfigMgr->LoadMore(cfg_def_file.c_str());
+
+            sConfigMgr->LoadMore(cfg_file.c_str());
+        }
+    }
+};
+
+void AddDeathStatTrackerScripts() { 
+  new DeathStatTracker(); 
+  new death_logging_conf();
+  }

@@ -19,35 +19,41 @@ public:
   int logDumpSize = sConfigMgr->GetIntDefault("KillDetailedLogging.dumpSize", 0);
 
   void OnCreatureKill(Player *player, Creature *killed) override{
-    stringstream killStream;
 
-    auto t = std::time(nullptr);
-    auto tm = *std::localtime(&t);
+    if (loggingEnabled){
+      stringstream killStream;
 
-    killStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
-    killStream << player->GetName() << "," << player->getFaction() << "," << player->getLevel() << "," << player->GetMaxHealth() << "," << player->GetHealth() << ",";
-    killStream << killed->GetName() << "," << killed->getFaction() << "," << killed->GetMaxHealth() << ",";
-    killStream << player->GetZoneId() << "," << player->GetAreaId() << "," << player->IsGameMaster();
-    killStream << "\n";
+      auto t = std::time(nullptr);
+      auto tm = *std::localtime(&t);
 
-    fullStream << killStream.str();
-    StringDump();
+      killStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
+      killStream << player->GetName() << "," << player->getFaction() << "," << player->getLevel() << "," << player->GetMaxHealth() << "," << player->GetHealth() << ",";
+      killStream << killed->GetName() << "," << killed->getFaction() << "," << killed->GetMaxHealth() << ",";
+      killStream << player->GetZoneId() << "," << player->GetAreaId() << "," << player->IsGameMaster();
+      killStream << "\n";
+
+      fullStream << killStream.str();
+      StringDump();
+    }
   }
 
   void OnCreatureKilledByPet(Player *petOwner, Creature *killed) override{
-    stringstream killStream;
 
-    auto t = std::time(nullptr);
-    auto tm = *std::localtime(&t);
+    if (loggingEnabled){
+      stringstream killStream;
 
-    killStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
-    killStream << petOwner->GetName() << "," << petOwner->getFaction() << "," << petOwner->getLevel() << "," << petOwner->GetMaxHealth() << "," << petOwner->GetHealth() << ",";
-    killStream << killed->GetName() << "," << killed->getFaction() << "," << killed->GetMaxHealth() << ",";
-    killStream << petOwner->GetZoneId() << "," << petOwner->GetAreaId() << "," << petOwner->IsGameMaster();
-    killStream << "\n";
+      auto t = std::time(nullptr);
+      auto tm = *std::localtime(&t);
 
-    fullStream << killStream.str();
-    StringDump();
+      killStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
+      killStream << petOwner->GetName() << "," << petOwner->getFaction() << "," << petOwner->getLevel() << "," << petOwner->GetMaxHealth() << "," << petOwner->GetHealth() << ",";
+      killStream << killed->GetName() << "," << killed->getFaction() << "," << killed->GetMaxHealth() << ",";
+      killStream << petOwner->GetZoneId() << "," << petOwner->GetAreaId() << "," << petOwner->IsGameMaster();
+      killStream << "\n";
+
+      fullStream << killStream.str();
+      StringDump();
+    }
   }
 
 private:
