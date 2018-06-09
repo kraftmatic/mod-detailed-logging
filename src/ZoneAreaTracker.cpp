@@ -88,7 +88,7 @@ private:
 
     insertCount++;
 
-    if (true){
+    if (insertCount > logDumpSize){
       // Dump to log
       ofstream logFile;
       logFile.open ("zonearea.log", ofstream::app);
