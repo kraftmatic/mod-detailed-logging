@@ -1,4 +1,5 @@
 #include "Configuration/Config.h"
+#include "Util.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include <iostream>
@@ -10,7 +11,7 @@ using std::stringstream;
 
 class KillStatTracker : public PlayerScript {
 public:
-  
+
   stringstream fullStream;
   bool loggingEnabled = sConfigMgr->GetBoolDefault("KillDetailedLogging.enabled", true);
   int logDumpSize = sConfigMgr->GetIntDefault("KillDetailedLogging.dumpSize", 0);
@@ -32,10 +33,9 @@ public:
     if (loggingEnabled){
       stringstream killStream;
 
-      auto t = std::time(nullptr);
-      auto tm = *std::localtime(&t);
 
-      killStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
+      time_t t = time(nullptr);
+      killStream << TimeToTimestampStr(t) << ",";
       killStream << player->GetName() << "," << player->getFaction() << "," << player->getLevel() << "," << player->GetMaxHealth() << "," << player->GetHealth() << ",";
       killStream << killed->GetName() << "," << killed->getFaction() << "," << killed->GetMaxHealth() << ",";
       killStream << player->GetZoneId() << "," << player->GetAreaId() << "," << player->IsGameMaster();
@@ -51,10 +51,9 @@ public:
     if (loggingEnabled){
       stringstream killStream;
 
-      auto t = std::time(nullptr);
-      auto tm = *std::localtime(&t);
 
-      killStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
+      time_t t = time(nullptr);
+      killStream << TimeToTimestampStr(t) << ",";
       killStream << petOwner->GetName() << "," << petOwner->getFaction() << "," << petOwner->getLevel() << "," << petOwner->GetMaxHealth() << "," << petOwner->GetHealth() << ",";
       killStream << killed->GetName() << "," << killed->getFaction() << "," << killed->GetMaxHealth() << ",";
       killStream << petOwner->GetZoneId() << "," << petOwner->GetAreaId() << "," << petOwner->IsGameMaster();
@@ -112,7 +111,7 @@ public:
     }
 };
 
-void AddKillStatTrackerScripts() { 
+void AddKillStatTrackerScripts() {
   new KillStatTracker();
   new kill_logging_conf();
 }

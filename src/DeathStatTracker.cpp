@@ -1,4 +1,5 @@
 #include "Configuration/Config.h"
+#include "Util.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include <iostream>
@@ -31,10 +32,9 @@ public:
     if (loggingEnabled){
       stringstream killStream;
 
-      auto t = std::time(nullptr);
-      auto tm = *std::localtime(&t);
 
-      killStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
+      time_t t = time(nullptr);
+      killStream << TimeToTimestampStr(t) << ",";
       killStream << player->GetName() << "," << player->getFaction() << "," << player->getLevel() << "," << player->GetMaxHealth() << "," << player->GetHealth() << ",";
       killStream << creature->GetName() << "," << creature->getFaction() << "," << creature->GetMaxHealth() << ",";
       killStream << player->GetZoneId() << "," << player->GetAreaId() << "," << player->IsGameMaster();
@@ -45,7 +45,7 @@ public:
     }
   }
 
- 
+
 private:
 
   int insertCount = 0;
@@ -93,7 +93,7 @@ public:
     }
 };
 
-void AddDeathStatTrackerScripts() { 
-  new DeathStatTracker(); 
+void AddDeathStatTrackerScripts() {
+  new DeathStatTracker();
   new death_logging_conf();
   }
