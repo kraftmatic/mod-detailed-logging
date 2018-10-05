@@ -1,4 +1,5 @@
 #include "Configuration/Config.h"
+#include "Util.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "Group.h"
@@ -15,7 +16,7 @@ public:
   bool loggingEnabled = sConfigMgr->GetBoolDefault("ZoneAreaDetailedLogging.enabled", true);
   int logDumpSize = sConfigMgr->GetIntDefault("ZoneAreaDetailedLogging.dumpSize", 0);
 
-  ZoneAreaTracker() : PlayerScript("ZoneAreaTracker") { 
+  ZoneAreaTracker() : PlayerScript("ZoneAreaTracker") {
 
     // If the file doesn't exist we will create it and add the appropriate headers
 
@@ -31,12 +32,11 @@ public:
     if (loggingEnabled){
       stringstream zoneStream;
 
-      auto t = std::time(nullptr);
-      auto tm = *std::localtime(&t);
 
       Group* group = player->GetGroup();
 
-      zoneStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
+      time_t t = time(nullptr);
+      zoneStream << TimeToTimestampStr(t) << ",";
       zoneStream << player->GetName() << "," << player->getFaction() << "," << player->getLevel() << "," << player->GetMaxHealth() << "," << player->GetHealth() << ",";
       zoneStream << newZone << "," << newArea << (group != NULL) << ",";
 
@@ -58,12 +58,11 @@ public:
     if (loggingEnabled){
       stringstream areaStream;
 
-      auto t = std::time(nullptr);
-      auto tm = *std::localtime(&t);
 
       Group* group = player->GetGroup();
 
-      areaStream << std::put_time(&tm, "%d-%m-%Y %H-%M-%S") << ",";
+      time_t t = time(nullptr);
+      areaStream << TimeToTimestampStr(t) << ",";
       areaStream << player->GetName() << "," << player->getFaction() << "," << player->getLevel() << "," << player->GetMaxHealth() << "," << player->GetHealth() << ",";
       areaStream << "000000" << "," << newArea << (group != NULL) << ",";
 
@@ -127,7 +126,7 @@ public:
     }
 };
 
-void AddZoneAreaTrackerScripts() { 
-  new ZoneAreaTracker(); 
+void AddZoneAreaTrackerScripts() {
+  new ZoneAreaTracker();
   new zone_area_logging_conf();
 }

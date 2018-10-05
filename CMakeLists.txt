@@ -1,4 +1,3 @@
-
 AC_ADD_SCRIPT("${CMAKE_CURRENT_LIST_DIR}/src/KillStatTracker.cpp")
 AC_ADD_SCRIPT("${CMAKE_CURRENT_LIST_DIR}/src/DeathStatTracker.cpp")
 AC_ADD_SCRIPT("${CMAKE_CURRENT_LIST_DIR}/src/ZoneAreaTracker.cpp")
